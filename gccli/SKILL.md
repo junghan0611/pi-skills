@@ -40,6 +40,11 @@ If no accounts, guide the user through setup:
 4. Run: `gccli accounts credentials ~/path/to/credentials.json`
 5. Run: `gccli accounts add <email>` (use `--manual` for browserless OAuth)
 
+## Accounts
+
+- **Work**: `gccli jhkim2@goqual.com` (회사)
+- **Personal**: `gccli junghanacs@gmail.com` (개인)
+
 ## Usage
 
 Run `gccli --help` for full command reference.

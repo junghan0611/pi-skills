@@ -40,6 +40,11 @@ If no accounts, guide the user through setup:
 4. Run: `gmcli accounts credentials ~/path/to/credentials.json`
 5. Run: `gmcli accounts add <email>` (use `--manual` for browserless OAuth)
 
+## Accounts
+
+- **Work**: `gmcli jhkim2@goqual.com` (회사)
+- **Personal**: `gmcli junghanacs@gmail.com` (개인)
+
 ## Usage
 
 Run `gmcli --help` for full command reference.
