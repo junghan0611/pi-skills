@@ -10,12 +10,27 @@
 - [x] gccli/gdcli/gmcli → _deprecated/ 이동
 - [ ] 회사 계정 OAuth 동의 화면 정리 (n8n-goqual, classroom 등 불필요 scope 제거)
 
+### 삽질 기록: 회사 계정 OAuth 인증 실패
+
+- `--services all`로 요청하면 `unknownerror` 발생
+- **원인**: n8n-goqual 프로젝트에서 Classroom, Forms 등 API가 활성화되지 않아 해당 scope 요청 시 실패
+- **해결**: `--services calendar,gmail,drive,tasks,chat` 으로 필요한 서비스만 지정
+- **교훈**: 회사/조직 프로젝트는 `--services all` 대신 실제 사용하는 서비스만 명시할 것
+
 ## OracleVM gogcli 배포
 
-- [ ] ssh oracle 접속하여 gog 바이너리 설치 (`go install github.com/steipete/gogcli/cmd/gog@latest`)
-- [ ] gogcli 크레덴셜 전송 (`~/.config/gogcli/` 디렉토리)
-- [ ] OracleVM에서 계정 인증 (--remote 2-step)
+- [x] ssh oracle 접속하여 gog 바이너리 설치
+- [x] gogcli 크레덴셜 전송 + 계정 인증 (--remote 2-step)
+- [x] keyring: file 모드, `GOG_KEYRING_PASSWORD=gogcli` 필수
 - [ ] OpenClaw 봇에게 gogcli 스킬 전달
+
+### 삽질 기록: Docker에서 gog 실행 불가 (동적 링크)
+
+- NixOS에서 `go install`로 빌드한 gog는 glibc에 동적 링크됨
+- Debian 기반 Docker 컨테이너에서 실행 불가 (glibc 버전 불일치)
+- **해결**: `CGO_ENABLED=0 go install github.com/steipete/gogcli/cmd/gog@v0.11.0` 로 정적 빌드
+- **참고**: denotecli(Rust)는 statically linked라 Docker 어디서든 동작
+- **교훈**: Go 바이너리를 Docker/다른 배포판에 넣을 때는 반드시 `CGO_ENABLED=0`
 
 ## Samsung Health 봇 연동
 
