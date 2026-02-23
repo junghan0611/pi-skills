@@ -1,118 +1,114 @@
 # pi-skills
 
-A collection of skills for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent), compatible with Claude Code, Codex CLI, Amp, and Droid.
+Personal AI agent skill set for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). 19 skills covering knowledge base, life tracking, git timeline, Google Workspace, web search, and more.
 
-## Installation
+Forked from [badlogic/pi-skills](https://github.com/badlogic/pi-skills) — upstream skills retained, custom skills added for personal data integration.
 
-### pi-coding-agent
+## Skills Overview
 
-```bash
-# User-level (available in all projects)
-git clone https://github.com/badlogic/pi-skills ~/.pi/agent/skills/pi-skills
+### 📊 Data Access (6 skills + 1 orchestrator)
 
-# Or project-level
-git clone https://github.com/badlogic/pi-skills .pi/skills/pi-skills
-```
+Core skills that access personal data accumulated over years.
 
-### Codex CLI
+| Skill | CLI | Version | Data | Repo |
+|-------|-----|---------|------|------|
+| [denotecli](denotecli/SKILL.md) | `denotecli` | v0.8.0 | 3,100+ Denote/org notes, 715 journal files | [junghan0611/denotecli](https://github.com/junghan0611/denotecli) |
+| [gitcli](gitcli/SKILL.md) | `gitcli` | v0.1.0 | 58 repos (41 personal + 17 work), 14,000+ commits | [junghan0611/gitcli](https://github.com/junghan0611/gitcli) |
+| [lifetract](lifetract/SKILL.md) | `lifetract` | v0.1.0 | Samsung Health (2017~) + aTimeLogger (2021~) | [junghan0611/lifetract](https://github.com/junghan0611/lifetract) |
+| [bibcli](bibcli/SKILL.md) | `bibcli` | v0.2.0 | 8,060 BibTeX entries (Zotero) | [junghan0611/zotero-config](https://github.com/junghan0611/zotero-config) |
+| [gogcli](gogcli/SKILL.md) | `gog` | v0.11.0 | Google Calendar, Gmail, Drive, Tasks, Contacts | — |
+| [ghcli](ghcli/SKILL.md) | `gh` | v2.83.2 | GitHub issues, PRs, starred repos | NixOS package |
+| [day-query](day-query/SKILL.md) | — | — | Orchestrates all above by date | — |
 
-```bash
-git clone https://github.com/badlogic/pi-skills ~/.codex/skills/pi-skills
-```
-
-### Amp
-
-Amp finds skills recursively in toolboxes:
-
-```bash
-git clone https://github.com/badlogic/pi-skills ~/.config/amp/tools/pi-skills
-```
-
-### Droid (Factory)
-
-```bash
-# User-level
-git clone https://github.com/badlogic/pi-skills ~/.factory/skills/pi-skills
-
-# Or project-level
-git clone https://github.com/badlogic/pi-skills .factory/skills/pi-skills
-```
-
-### Claude Code
-
-Claude Code only looks one level deep for `SKILL.md` files, so each skill folder must be directly under the skills directory. Clone the repo somewhere, then symlink individual skills:
-
-```bash
-# Clone to a convenient location
-git clone https://github.com/badlogic/pi-skills ~/pi-skills
-
-# Symlink individual skills (user-level)
-mkdir -p ~/.claude/skills
-ln -s ~/pi-skills/brave-search ~/.claude/skills/brave-search
-ln -s ~/pi-skills/browser-tools ~/.claude/skills/browser-tools
-ln -s ~/pi-skills/gccli ~/.claude/skills/gccli
-ln -s ~/pi-skills/gdcli ~/.claude/skills/gdcli
-ln -s ~/pi-skills/gmcli ~/.claude/skills/gmcli
-ln -s ~/pi-skills/transcribe ~/.claude/skills/transcribe
-ln -s ~/pi-skills/vscode ~/.claude/skills/vscode
-ln -s ~/pi-skills/youtube-transcript ~/.claude/skills/youtube-transcript
-
-# Or project-level
-mkdir -p .claude/skills
-ln -s ~/pi-skills/brave-search .claude/skills/brave-search
-ln -s ~/pi-skills/browser-tools .claude/skills/browser-tools
-ln -s ~/pi-skills/gccli .claude/skills/gccli
-ln -s ~/pi-skills/gdcli .claude/skills/gdcli
-ln -s ~/pi-skills/gmcli .claude/skills/gmcli
-ln -s ~/pi-skills/transcribe .claude/skills/transcribe
-ln -s ~/pi-skills/vscode .claude/skills/vscode
-ln -s ~/pi-skills/youtube-transcript .claude/skills/youtube-transcript
-```
-
-## Available Skills
+### 🌐 External Information (4 skills)
 
 | Skill | Description |
 |-------|-------------|
-| [brave-search](brave-search/SKILL.md) | Web search and content extraction via Brave Search |
-| [browser-tools](browser-tools/SKILL.md) | Interactive browser automation via Chrome DevTools Protocol |
-| [gccli](gccli/SKILL.md) | Google Calendar CLI for events and availability |
-| [gdcli](gdcli/SKILL.md) | Google Drive CLI for file management and sharing |
-| [gmcli](gmcli/SKILL.md) | Gmail CLI for email, drafts, and labels |
-| [transcribe](transcribe/SKILL.md) | Speech-to-text transcription via Groq Whisper API |
-| [vscode](vscode/SKILL.md) | VS Code integration for diffs and file comparison |
-| [youtube-transcript](youtube-transcript/SKILL.md) | Fetch YouTube video transcripts |
+| [brave-search](brave-search/SKILL.md) | Web search via Brave Search API |
+| [youtube-transcript](youtube-transcript/SKILL.md) | YouTube video transcript extraction |
+| [medium-extractor](medium-extractor/SKILL.md) | Medium article markdown extraction |
+| [browser-tools](browser-tools/SKILL.md) | Chrome DevTools Protocol automation |
 
-## Skill Format
+### 🛠️ Editor & Tools (3 skills)
 
-Each skill follows the pi/Claude Code format:
+| Skill | Description |
+|-------|-------------|
+| [emacs](emacs/SKILL.md) | Emacs buffer/selection context via emacsclient |
+| [transcribe](transcribe/SKILL.md) | Speech-to-text via Groq Whisper API |
+| [vscode](vscode/SKILL.md) | VS Code diff/compare integration |
 
-```markdown
----
-name: skill-name
-description: Short description shown to agent
----
+### 🔔 Peon Ping (4 skills)
 
-# Instructions
+| Skill | Description |
+|-------|-------------|
+| [peon-ping-toggle](peon-ping-toggle/SKILL.md) | Sound notifications on/off |
+| [peon-ping-config](peon-ping-config/SKILL.md) | Volume, pack rotation, categories |
+| [peon-ping-use](peon-ping-use/SKILL.md) | Voice pack selection per session |
+| [peon-ping-log](peon-ping-log/SKILL.md) | Exercise rep logging |
 
-Detailed instructions here...
-Helper files available at: {baseDir}/
+### 📦 Utility (1 skill)
+
+| Skill | Description |
+|-------|-------------|
+| [bd-to-br-migration](bd-to-br-migration/SKILL.md) | Beads tracker migration guide |
+
+## Custom CLIs (Go, zero dependencies)
+
+All custom CLIs are written in Go with no external dependencies. Static binaries, CGO_ENABLED=0.
+
+| CLI | Description | Tests | Coverage |
+|-----|-------------|-------|----------|
+| **denotecli** | Denote knowledge base search, read, day timeline, tag management | 30+ | 70.8% |
+| **gitcli** | Local git commit timeline across 58 repos | 21 | 70.3% |
+| **lifetract** | Samsung Health + aTimeLogger unified query | — | — |
+| **bibcli** | BibTeX search/show across 8 bib files | — | — |
+
+### Build & Install
+
+```bash
+# Each CLI: cd into repo, build, copy to ~/.local/bin
+cd ~/repos/gh/denotecli/denotecli && CGO_ENABLED=0 go build -o denotecli . && cp denotecli ~/.local/bin/
+cd ~/repos/gh/gitcli/gitcli && CGO_ENABLED=0 go build -o gitcli . && cp gitcli ~/.local/bin/
+cd ~/repos/gh/lifetract/lifetract && CGO_ENABLED=0 go build -o lifetract . && cp lifetract ~/.local/bin/
+cd ~/repos/gh/zotero-config/bibcli && CGO_ENABLED=0 go build -o bibcli . && cp bibcli ~/.local/bin/
 ```
 
-The `{baseDir}` placeholder is replaced with the skill's directory path at runtime.
+## Environment Setup
 
-## Requirements
+See [ENV-SETUP.md](ENV-SETUP.md) for full details.
 
-Some skills require additional setup. Generally, the agent will walk you through that. But if not, here you go:
+### Required
 
-- **brave-search**: Requires Node.js. Run `npm install` in the skill directory.
-- **browser-tools**: Requires Chrome and Node.js. Run `npm install` in the skill directory.
-- **gccli**: Requires Node.js. Install globally with `npm install -g @mariozechner/gccli`.
-- **gdcli**: Requires Node.js. Install globally with `npm install -g @mariozechner/gdcli`.
-- **gmcli**: Requires Node.js. Install globally with `npm install -g @mariozechner/gmcli`.
-- **subagent**: Requires pi-coding-agent. Install globally with `npm install -g @mariozechner/pi-coding-agent`.
-- **transcribe**: Requires curl and a Groq API key.
-- **vscode**: Requires VS Code with `code` CLI in PATH.
-- **youtube-transcript**: Requires Node.js. Run `npm install` in the skill directory.
+```bash
+# ~/.env.local or home.sessionVariables in NixOS
+export BIBCLI_DIR="$HOME/sync/emacs/zotero-config/output"
+export GOG_ACCOUNT="junghanacs@gmail.com"
+```
+
+### API Keys (in ~/.bashrc.local)
+
+```bash
+export BRAVE_API_KEY="..."       # Brave Search
+export GROQ_API_KEY="..."        # Groq Whisper (transcribe)
+export OPENROUTER_API_KEY="..."  # OpenRouter
+```
+
+### Author Config (gitcli)
+
+```
+# ~/.config/gitcli/authors
+junghan
+jhkim2
+```
+
+## Agent Compatibility
+
+| Agent | Method |
+|-------|--------|
+| [pi-coding-agent](https://github.com/badlogic/pi-mono) | `~/.pi/agent/skills/pi-skills/` |
+| Claude Code | Symlink each skill to `~/.claude/skills/` |
+| Codex CLI | `~/.codex/skills/pi-skills/` |
+| Amp | `~/.config/amp/tools/pi-skills/` |
 
 ## License
 
