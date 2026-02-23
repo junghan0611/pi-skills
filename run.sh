@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
-# run.sh — Build all custom CLIs (x86_64 + arm64) and place in skill folders
+# run.sh — Build, install, and deploy all custom CLIs
+# Usage:
+#   ./run.sh              # build + local install
+#   ./run.sh --deploy     # build + local install + Oracle VM deploy
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPOS="$HOME/repos/gh"
+DEPLOY="${1:-}"
+
+CLIS=(
+  "denotecli|$REPOS/denotecli/denotecli|$SCRIPT_DIR/denotecli|denotecli"
+  "gitcli|$REPOS/gitcli/gitcli|$SCRIPT_DIR/gitcli|gitcli"
+  "lifetract|$REPOS/lifetract/lifetract|$SCRIPT_DIR/lifetract|lifetract"
+  "bibcli|$REPOS/zotero-config/bibcli|$SCRIPT_DIR/bibcli|bibcli"
+)
 
 build_cli() {
   local name=$1 src_dir=$2 skill_dir=$3 bin_name=$4
@@ -11,7 +22,7 @@ build_cli() {
   echo "=== $name ==="
   if [ ! -d "$src_dir" ]; then
     echo "  ❌ source not found: $src_dir"
-    return
+    return 1
   fi
 
   cd "$src_dir"
@@ -32,20 +43,57 @@ build_cli() {
   echo ""
 }
 
+deploy_oracle() {
+  echo ""
+  echo "=== Deploy to Oracle VM (arm64) ==="
+  if ! ssh -o ConnectTimeout=5 oracle true 2>/dev/null; then
+    echo "  ❌ Cannot connect to oracle — skipping deploy"
+    return 1
+  fi
+
+  ssh oracle "mkdir -p ~/.local/bin ~/.config/gitcli"
+
+  for entry in "${CLIS[@]}"; do
+    IFS='|' read -r name src_dir skill_dir bin_name <<< "$entry"
+    local arm_bin="$skill_dir/${bin_name}-linux-arm64"
+    if [ -f "$arm_bin" ]; then
+      scp -q "$arm_bin" "oracle:~/.local/bin/$bin_name"
+      echo "  ✅ oracle:~/.local/bin/$bin_name"
+    fi
+  done
+
+  # Sync config files
+  if [ -f "$HOME/.config/gitcli/authors" ]; then
+    scp -q "$HOME/.config/gitcli/authors" oracle:~/.config/gitcli/authors
+    echo "  ✅ oracle:~/.config/gitcli/authors"
+  fi
+
+  # Verify
+  echo ""
+  echo "=== Oracle verification ==="
+  ssh oracle "export PATH=\$PATH:\$HOME/.local/bin && \
+    echo \"  denotecli: \$(denotecli version 2>&1)\" && \
+    echo \"  gitcli:    \$(gitcli version 2>&1)\" && \
+    echo \"  lifetract: \$(lifetract --version 2>&1)\" && \
+    echo \"  bibcli:    \$(bibcli --help 2>&1 | head -1)\""
+}
+
+# --- Main ---
+
 echo "Building all pi-skills CLIs..."
 echo ""
 
-build_cli "denotecli" "$REPOS/denotecli/denotecli" "$SCRIPT_DIR/denotecli" "denotecli"
-build_cli "gitcli"    "$REPOS/gitcli/gitcli"       "$SCRIPT_DIR/gitcli"    "gitcli"
-build_cli "lifetract" "$REPOS/lifetract/lifetract"  "$SCRIPT_DIR/lifetract" "lifetract"
-build_cli "bibcli"    "$REPOS/zotero-config/bibcli" "$SCRIPT_DIR/bibcli"    "bibcli"
-
-echo "=== Done ==="
-echo ""
-echo "Binaries in skill folders:"
-for dir in denotecli gitcli lifetract bibcli; do
-  ls -lh "$SCRIPT_DIR/$dir/"*-linux-* "$SCRIPT_DIR/$dir/$dir" 2>/dev/null | awk '{print "  " $NF " (" $5 ")"}'
+for entry in "${CLIS[@]}"; do
+  IFS='|' read -r name src_dir skill_dir bin_name <<< "$entry"
+  build_cli "$name" "$src_dir" "$skill_dir" "$bin_name"
 done
-echo ""
-echo "ARM64 binaries for Oracle VM:"
-echo "  scp pi-skills/{denotecli,gitcli,lifetract,bibcli}/*-linux-arm64 user@oracle:~/.local/bin/"
+
+echo "=== Build complete ==="
+
+if [ "$DEPLOY" = "--deploy" ]; then
+  deploy_oracle
+else
+  echo ""
+  echo "Run with --deploy to push arm64 binaries to Oracle VM:"
+  echo "  ./run.sh --deploy"
+fi
