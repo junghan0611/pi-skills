@@ -30,10 +30,13 @@ gitcli day <DATE> --me --repos ~/repos/work          # 회사만
 ### 2. 저널/노트 (denotecli)
 
 ```bash
-denotecli day <DATE> --dirs ~/org
+denotecli day <DATE> --dirs ~/org                   # 저널+당일 노트 통합
+denotecli day --days-ago 1 --dirs ~/org              # 어제
+denotecli day --years-ago 3 --dirs ~/org             # 3년 전 오늘
 ```
 
 Journal(daily/weekly), diary.org datetree, 당일 생성 노트를 한번에 반환.
+`<DATE>` 형식: `2025-10-04` 또는 `20251004`.
 
 ### 3. 건강/시간 추적 (lifetract)
 
@@ -54,11 +57,13 @@ bibcli search "<YYYYMMDD>"
 ### 5. 일정/할일 (gogcli, 선택)
 
 ```bash
-gog cal list --date <DATE>
-gog tasks list
+gog calendar list --from <DATE>T00:00:00+09:00 --to <NEXT_DATE>T00:00:00+09:00
+gog tasks lists                                      # 태스크 리스트 목록 먼저
+gog tasks list <listId> --all                        # 특정 리스트의 태스크
 ```
 
 Google Calendar 일정, Tasks 할일.
+`--date` 플래그는 없음. `--from`/`--to` 조합 사용.
 
 ## 날짜 형식 (모든 CLI 공통)
 
@@ -93,7 +98,7 @@ Google Calendar 일정, Tasks 할일.
 
 ```bash
 gitcli day --years-ago 3 --me
-denotecli day --years-ago 3
+denotecli day --years-ago 3 --dirs ~/org
 lifetract read $(date -d '3 years ago' +%Y-%m-%d)
 ```
 
@@ -107,6 +112,7 @@ gitcli timeline --month 2026-02 --me --repos ~/repos/work
 
 ```bash
 gitcli day --days-ago 1 --me
-denotecli day --days-ago 1
+denotecli day --days-ago 1 --dirs ~/org
 lifetract read $(date -d yesterday +%Y-%m-%d)
+gog calendar list --from $(date -d yesterday +%Y-%m-%d)T00:00:00+09:00 --to $(date +%Y-%m-%d)T00:00:00+09:00
 ```
