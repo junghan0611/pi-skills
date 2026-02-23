@@ -41,29 +41,32 @@ Journal(daily/weekly), diary.org datetree, 당일 생성 노트를 한번에 반
 ### 3. 건강/시간 추적 (lifetract)
 
 ```bash
-lifetract read <DATE>
+lifetract read <DATE> --data-dir ~/repos/gh/self-tracking-data
 ```
 
 수면, 걸음, 심박, 스트레스, aTimeLogger 시간 카테고리.
 
-### 4. 참고문헌 (bibcli, 선택)
+### 4. 참고문헌 (bibcli, 선택 — 히트율 낮음)
 
 ```bash
-bibcli search "<YYYYMMDD>"
+bibcli search "<YYYYMMDD>" --dir ~/org/resources
 ```
 
-당일 추가된 Zotero 참고문헌 (해당일에 bib 엔트리가 생성된 경우).
+당일 추가된 Zotero 참고문헌. citation key에 날짜 접두사가 있는 경우만 매칭.
+대부분의 날짜에서 0건이 정상.
 
 ### 5. 일정/할일 (gogcli, 선택)
 
 ```bash
-gog calendar list --from <DATE>T00:00:00+09:00 --to <NEXT_DATE>T00:00:00+09:00
-gog tasks lists                                      # 태스크 리스트 목록 먼저
-gog tasks list <listId> --all                        # 특정 리스트의 태스크
+gog -j calendar list --from <DATE>T00:00:00+09:00 --to <NEXT_DATE>T00:00:00+09:00 --account junghanacs@gmail.com
+gog -j tasks lists --account junghanacs@gmail.com
+gog -j tasks list <listId> --all --account junghanacs@gmail.com
 ```
 
 Google Calendar 일정, Tasks 할일.
 `--date` 플래그는 없음. `--from`/`--to` 조합 사용.
+**`-j` 필수** — 없으면 colored text 출력되어 JSON 파싱 불가.
+`--account` 또는 `GOG_ACCOUNT` 환경변수 필요.
 
 ## 날짜 형식 (모든 CLI 공통)
 
@@ -74,6 +77,22 @@ Google Calendar 일정, Tasks 할일.
 | `--years-ago N` | N년 전 오늘 |
 | `--days-ago N` | N일 전 오늘 |
 
+## 2단계 조회 전략
+
+토큰 절약을 위해 **개요 → 상세** 순서로 조회:
+
+```bash
+# 1단계: 개요 (항상)
+gitcli day <DATE> --me                    # 리포별 커밋 수 확인
+denotecli day <DATE> --dirs ~/org         # 저널/노트 개요
+
+# 2단계: 상세 (사용자가 요청 시)
+gitcli log <repo-name> --from <DATE> --to <DATE>   # 특정 리포 커밋 상세
+denotecli read <ID> --offset 1 --limit 50           # 특정 노트 본문
+```
+
+커밋 50+인 날은 gitcli 응답만 15KB+. 상세가 불필요하면 1단계만으로 충분.
+
 ## 통합 해석 가이드
 
 에이전트가 5개 결과를 받으면:
@@ -82,6 +101,14 @@ Google Calendar 일정, Tasks 할일.
 2. **패턴 인식** — "새벽 2시부터 코딩, 점심 안 먹음, 스트레스 높음"
 3. **장기 비교** — `--years-ago`로 작년 같은 시기와 비교
 4. **프로젝트 추적** — gitcli timeline으로 프로젝트 전환 패턴 파악
+
+## JSON 파싱 주의
+
+- **gitcli**: `repos`가 빈 배열 `[]`일 수 있음 (커밋 없는 날). ~~null~~ v0.1.1+에서 수정됨.
+- **denotecli**: `journal`, `notes_created`, `datetree` 키가 데이터 없으면 **생략**됨. 키 존재 여부 체크 필요.
+- **lifetract**: 건강 데이터 없으면 `{id, date}`만 반환. 나머지 키 생략.
+- **--me 필터**: `~/.config/gitcli/authors` 파일 없으면 경고 출력 후 전체 커밋 반환 (v0.1.1+).
+- **timezone**: 서버가 UTC인 경우, KST 새벽(00:00~08:59) 커밋이 UTC 전날로 분류될 수 있음.
 
 ## Repo Groups (gitcli용)
 
@@ -99,7 +126,7 @@ Google Calendar 일정, Tasks 할일.
 ```bash
 gitcli day --years-ago 3 --me
 denotecli day --years-ago 3 --dirs ~/org
-lifetract read $(date -d '3 years ago' +%Y-%m-%d)
+lifetract read $(date -d '3 years ago' +%Y-%m-%d) --data-dir ~/repos/gh/self-tracking-data
 ```
 
 ### "이번 달 회사 작업 정리"
@@ -113,6 +140,6 @@ gitcli timeline --month 2026-02 --me --repos ~/repos/work
 ```bash
 gitcli day --days-ago 1 --me
 denotecli day --days-ago 1 --dirs ~/org
-lifetract read $(date -d yesterday +%Y-%m-%d)
-gog calendar list --from $(date -d yesterday +%Y-%m-%d)T00:00:00+09:00 --to $(date +%Y-%m-%d)T00:00:00+09:00
+lifetract read $(date -d yesterday +%Y-%m-%d) --data-dir ~/repos/gh/self-tracking-data
+gog -j calendar list --from $(date -d yesterday +%Y-%m-%d)T00:00:00+09:00 --to $(date +%Y-%m-%d)T00:00:00+09:00 --account junghanacs@gmail.com
 ```
