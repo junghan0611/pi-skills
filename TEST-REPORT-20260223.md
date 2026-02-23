@@ -11,10 +11,12 @@
 
 | 상태 | 개수 | 비율 |
 |------|------|------|
-| ✅ 정상 동작 | 13 | 68% |
-| ⚠️ 설정 필요 | 4 | 21% |
+| ✅ 정상 동작 | 15 | 79% |
+| ⚠️ 설정 필요 | 2 | 11% |
 | 🔧 마이너 이슈 | 2 | 11% |
 | ❌ 실패 | 0 | 0% |
+
+> **2차 테스트 (16:25)**: bibcli, gogcli 환경변수 해결 후 재확인 → 모두 정상
 
 ---
 
@@ -26,7 +28,7 @@
 |------|----------|------|-------------|------|
 | **denotecli** | `denotecli` | v0.8.0 | search, day, timeline-journal 모두 정상 | 🆕 day, timeline-journal 신규 기능 OK |
 | **gitcli** | `gitcli` | v0.1.0 | day, repos, log 모두 정상. 오늘 40커밋 탐지 | 🆕 신규 CLI |
-| **bibcli** | `bibcli` | - | search, show, list 정상. 8,060 엔트리 | `BIBCLI_DIR` 환경변수 필요 |
+| **bibcli** | `bibcli` | - | search, show, list, stats 정상. 8,060 엔트리 | `BIBCLI_DIR` 환경변수 설정 완료 |
 | **ghcli** | `gh` | v2.83.2 | API 인증 OK, `junghan0611` 확인 | NixOS 패키지 |
 | **lifetract** | `lifetract` | v0.1.0 | status, today 정상. DB 모드 동작 | Samsung Health + aTimeLogger |
 | **emacs** | `emacsclient` | - | 서버 연결 정상, 버퍼명 반환 OK | Doom Emacs 서버 구동 중 |
@@ -38,14 +40,19 @@
 | **bd-to-br-migration** | `br` | v0.1.14 | br CLI 정상 동작 | 마이그레이션 가이드 |
 | **peon-ping-toggle** | `peon.sh` | v2.5.0 | pause/resume 정상 | pi 확장과 연동 확인 |
 
-### ⚠️ 설정 필요 (4개)
+### ⚠️ 설정 필요 (2개)
 
 | 스킬 | 상태 | 필요 조치 |
 |------|------|-----------|
 | **brave-search** | `BRAVE_SEARCH_API_KEY` 미설정 | API 키 발급 필요 (무료 플랜 가능) |
-| **gogcli** | `--account` 필요, 타임아웃 발생 | `gog auth manage`로 기본 계정 설정 또는 `GOG_ACCOUNT` 환경변수 |
 | **browser-tools** | Chrome `:9222` 필요 | `npm install` + Chrome `--remote-debugging-port=9222` 실행 필요 |
-| **peon-ping-config** | `user_invocable: false` | 에이전트 자동 호출 전용, 직접 테스트 불필요 |
+
+### ✅ 2차 테스트 해결 (환경변수)
+
+| 스킬 | 해결 방법 | 결과 |
+|------|-----------|------|
+| **bibcli** | `BIBCLI_DIR` → `~/.config/environment.d/50-pi-skills.conf` | 8,060 엔트리 검색 정상 |
+| **gogcli** | `GOG_ACCOUNT=junghanacs@gmail.com` 동일 파일 | Calendar(No events=정상), Gmail 검색 정상 |
 
 ### 🔧 마이너 이슈 (2개)
 
@@ -60,11 +67,13 @@
 
 | 변수 | 상태 | 용도 |
 |------|------|------|
-| `BIBCLI_DIR` | ⚠️ 수동 설정 필요 | `~/sync/emacs/zotero-config/output` |
+| `BIBCLI_DIR` | ✅ 설정됨 | `~/sync/emacs/zotero-config/output` |
+| `GOG_ACCOUNT` | ✅ 설정됨 | `junghanacs@gmail.com` |
 | `GROQ_API_KEY` | ✅ 설정됨 | Groq Whisper 음성인식 |
 | `BRAVE_SEARCH_API_KEY` | ❌ 미설정 | Brave 웹 검색 |
-| `GOG_ACCOUNT` | ⚠️ 미설정 | Google Workspace CLI |
 | `GITHUB_TOKEN` / `gh auth` | ✅ 인증됨 | GitHub CLI |
+
+**설정 파일**: `~/.config/environment.d/50-pi-skills.conf`
 
 ---
 
@@ -102,15 +111,15 @@ $ denotecli timeline-journal --month 2026-02
 
 ## 권장 조치
 
-### 즉시 (환경변수)
-1. `~/.profile`에 `export BIBCLI_DIR=~/sync/emacs/zotero-config/output` 추가
-2. `gog auth manage`로 기본 Google 계정 설정
-3. (선택) Brave Search API 키 발급
+### 완료 ✅
+1. ~~`BIBCLI_DIR` 환경변수~~ → `50-pi-skills.conf`에 설정 완료
+2. ~~`GOG_ACCOUNT` 환경변수~~ → 동일 파일에 설정 완료
 
-### 단기
-1. peon-ping v2.5.0 → v2.8.0 업데이트
-2. lifetract DB 최신 데이터 동기화 확인 (오늘자 steps=0)
+### 남은 조치
+1. (선택) Brave Search API 키 발급
+2. peon-ping v2.5.0 → v2.8.0 업데이트
+3. lifetract DB 최신 데이터 동기화 확인 (오늘자 steps=0, 폰 동기화 필요)
 
 ---
 
-*테스트 완료. 15/19 스킬 즉시 사용 가능.*
+*2차 테스트 완료. 17/19 스킬 즉시 사용 가능. (brave-search, browser-tools만 추가 설정 필요)*
