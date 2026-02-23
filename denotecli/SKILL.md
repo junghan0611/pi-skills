@@ -65,6 +65,25 @@ rg and fd can search files. This tool exists for what they can't do:
 
 **day-query 스킬과 연동**: gitcli day, lifetract read와 함께 호출하면 날짜 기반 통합 뷰 완성.
 
+### timeline-journal — 월간 저널 활동 개요
+
+```bash
+{baseDir}/denotecli timeline-journal --month 2023-02
+{baseDir}/denotecli timeline-journal --from 2023-02-01 --to 2023-02-28
+```
+
+날짜별 엔트리 수, 소스(journal/datetree), 생성 노트 수를 한눈에.
+
+```json
+{
+  "period": "2023-02-01 ~ 2023-02-28",
+  "total_days": 28, "active_days": 28,
+  "days": [
+    {"date": "2023-02-01", "day_of_week": "Wednesday", "sources": ["journal","datetree"], "journal_count": 12, "datetree_count": 4, "notes_count": 0}
+  ]
+}
+```
+
 ### search — find notes by title, tag, ID
 
 ```bash
