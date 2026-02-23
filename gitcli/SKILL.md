@@ -15,11 +15,13 @@ All output is JSON.
 
 ## When to Use
 
-- "어제 뭐 코딩했지?" → `gitcli day --days-ago 1`
+- "어제 뭐 코딩했지?" → `gitcli day --days-ago 1 --me`
 - "pi-mono 최근 커밋" → `gitcli log pi-mono --days 7`
-- "이번 달 활동량" → `gitcli timeline --month 2026-02`
+- "이번 달 활동량" → `gitcli timeline --month 2026-02 --me`
 - "리포 몇 개야?" → `gitcli repos`
-- 특정 날짜 활동 → `gitcli day 2025-10-10`
+- 특정 날짜 활동 → `gitcli day 2025-10-10 --me`
+- "회사 작업 정리" → `gitcli timeline --month 2026-02 --me --repos ~/repos/work`
+- "연봉협상 자료" → `gitcli timeline --days 90 --me --repos ~/repos/work`
 
 ## Commands
 
@@ -68,10 +70,28 @@ Output: period, total_commits, active_days, daily[].{date, commits, repos[], hou
 
 ## Important Notes
 
-- **포크 리포 주의**: repos/gh에 포크한 리포가 섞여 있음. `--author` 필터로 본인 커밋만 볼 것.
-- **기본 경로**: `~/repos/gh,~/repos/work` (1-depth 스캔, .git 있는 디렉토리만)
+- **`--me` 권장**: 포크/AI 커밋 자동 필터링. `~/.config/gitcli/authors`에 패턴 정의됨.
+- **기본 경로**: `~/repos/gh,~/repos/work` (둘 다 스캔)
+- **경로 분리**: 개인(`--repos ~/repos/gh`), 회사(`--repos ~/repos/work`)로 용도별 조회 가능
 - **날짜 형식**: YYYY-MM-DD, YYYYMMDD, YYYYMMDDT... (Denote ID) 모두 지원
 - **day-query 스킬과 연동**: 날짜 질문 시 denotecli day, lifetract read와 함께 호출
+
+## Author Config (~/.config/gitcli/authors)
+
+```
+# 한 줄에 하나, 대소문자 무관 부분 일치
+junghan     # 개인: junghan, junghan0611, Jung Han, junghanacs
+jhkim2      # 회사: Junghan Kim <jhkim2@goqual.com>
+```
+
+**필터 효과**: memacs-config(포크)의 Karl Voit 커밋, hej-kip의 Claude 커밋 등 자동 제외.
+
+## Repo Groups
+
+| 경로 | 성격 | 리포 수 | 기간 |
+|------|------|---------|------|
+| `~/repos/gh` | 개인 GitHub | ~30 | 2011~ |
+| `~/repos/work` | 회사 GitHub | ~18 | 2025~ |
 
 ## Combination with Other Skills
 
