@@ -88,6 +88,29 @@ for entry in "${CLIS[@]}"; do
   build_cli "$name" "$src_dir" "$skill_dir" "$bin_name"
 done
 
+# --- Sync SKILL.md: pi-skills → individual repos ---
+echo ""
+echo "=== Sync SKILL.md ==="
+sync_skill() {
+  local skill_dir=$1 repo_dir=$2
+  local src="$skill_dir/SKILL.md"
+  local dst="$repo_dir/SKILL.md"
+  if [ -f "$src" ] && [ -d "$repo_dir" ]; then
+    if ! diff -q "$src" "$dst" &>/dev/null; then
+      cp "$src" "$dst"
+      echo "  ✅ $(basename "$repo_dir")/SKILL.md updated"
+    else
+      echo "  · $(basename "$repo_dir")/SKILL.md (no change)"
+    fi
+  fi
+}
+
+sync_skill "$SCRIPT_DIR/denotecli" "$REPOS/denotecli"
+sync_skill "$SCRIPT_DIR/gitcli"    "$REPOS/gitcli"
+sync_skill "$SCRIPT_DIR/lifetract" "$REPOS/lifetract"
+# bibcli lives in zotero-config — no SKILL.md in that repo
+
+echo ""
 echo "=== Build complete ==="
 
 if [ "$DEPLOY" = "--deploy" ]; then
