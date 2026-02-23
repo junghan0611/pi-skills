@@ -1,7 +1,14 @@
 node_modules/
 .DS_Store
-denotecli/denotecli
-gitcli/gitcli
 .claude/
 .pi/
+
+# CLI binaries (built by run.sh, not committed)
+denotecli/denotecli
 denotecli/denotecli-linux-arm64
+gitcli/gitcli
+gitcli/gitcli-linux-arm64
+lifetract/lifetract
+lifetract/lifetract-linux-arm64
+bibcli/bibcli
+bibcli/bibcli-linux-arm64
