@@ -98,6 +98,28 @@ All output is JSON. Examples:
 {"total": 8030, "files": {"Book.bib": 1463, "Online.bib": 2610, ...}}
 ```
 
+## Update Bib Data
+
+Bib files can become stale. Use these commands to sync from Zotero Cloud:
+
+```bash
+cd ~/repos/gh/zotero-config
+
+# 증분 동기화 (Zotero 변경분만)
+./run.sh bib sync
+
+# 전체 재동기화
+./run.sh bib full
+
+# 증분 + GitHub starred 한번에
+./run.sh update
+
+# 현재 상태 확인 (동기화 없이)
+./run.sh bib status
+```
+
+동기화 후 `output/*.bib` → `~/org/resources/`로 자동 복사됩니다.
+
 ## BibTeX File Types
 
 | File | Content | Count |
