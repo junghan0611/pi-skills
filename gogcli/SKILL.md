@@ -155,12 +155,22 @@ gog docs insert <docId> "삽입할 내용"               # 끝에 추가
 gog docs find-replace <docId> "찾기" "바꾸기"
 ```
 
-## Chat (Workspace)
+## Chat (Google Workspace only)
+
+**주의**: Google Chat API는 Workspace 계정만 지원. 개인 Gmail 불가.
+반드시 `--account jhkim2@goqual.com` (또는 다른 Workspace 계정) 사용.
 
 ```bash
+# 스페이스/DM 목록 조회
 gog chat spaces list
+
+# 메시지 읽기
 gog chat messages list <spaceId> --max 20
+
+# 메시지 보내기
 gog chat messages send <spaceId> --text "메시지"
+
+# DM 보내기
 gog chat dm send <userId> --text "DM 메시지"
 ```
 
