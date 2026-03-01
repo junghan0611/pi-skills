@@ -103,9 +103,56 @@ jhkim2
 
 ## Agent Compatibility
 
+이 스킬셋은 로컬 에이전트와 OpenClaw 봇들이 공유한다. **공통 스킬은 동일한 SKILL.md를 유지해야 한다.**
+
+### 배포 위치
+
+| 에이전트 | 위치 | 설명 |
+|----------|------|------|
+| **pi** (로컬) | `~/.pi/agent/skills/pi-skills/` | 이 리포의 원본. 노트북/NUC에서 직접 사용 |
+| **glg봇** | `~/openclaw/config/workspace-glg/skills/` | OpenClaw Docker — glg 워크스페이스 |
+| **bbot** | `~/openclaw/config/workspace/skills/` | OpenClaw Docker — b 워크스페이스 |
+
+### 스킬 동기화 현황
+
+공통 16개 스킬은 세 곳 모두 동일하게 유지:
+
+| 스킬 | pi | glg봇 | bbot |
+|------|:--:|:-----:|:----:|
+| agenda | ✓ | ✓ | ✓ |
+| bibcli | ✓ | ✓ | ✓ |
+| botlog | ✓ | ✓ | ✓ |
+| brave-search | ✓ | ✓ | ✓ |
+| day-query | ✓ | ✓ | ✓ |
+| denotecli | ✓ | ✓ | ✓ |
+| emacs | ✓ | ✓ | ✓ |
+| ghcli | ✓ | ✓ | ✓ |
+| gitcli | ✓ | ✓ | ✓ |
+| gogcli | ✓ | ✓ | ✓ |
+| lifetract | ✓ | ✓ | ✓ |
+| medium-extractor | ✓ | ✓ | ✓ |
+| punchout | ✓ | ✓ | ✓ |
+| summarize | ✓ | ✓ | ✓ |
+| transcribe | ✓ | ✓ | ✓ |
+| youtube-transcript | ✓ | ✓ | ✓ |
+
+pi 전용 (봇에 불필요):
+- `browser-tools`, `vscode`, `peon-ping-*`, `bd-to-br-migration`
+
+### 동기화 규칙
+
+1. **pi-skills 리포가 원본** — 여기서 수정 후 봇에 복사
+2. **봇에서 먼저 수정한 경우** — pi-skills에도 반영 (glg봇 emacs SKILL.md 사례)
+3. **공통 스킬 수정 시** 세 곳 모두 동일한지 확인:
+   ```bash
+   diff ~/.pi/agent/skills/pi-skills/<skill>/SKILL.md ~/openclaw/config/workspace-glg/skills/<skill>/SKILL.md
+   diff ~/openclaw/config/workspace-glg/skills/<skill>/SKILL.md ~/openclaw/config/workspace/skills/<skill>/SKILL.md
+   ```
+
+### 기타 에이전트
+
 | Agent | Method |
 |-------|--------|
-| [pi-coding-agent](https://github.com/badlogic/pi-mono) | `~/.pi/agent/skills/pi-skills/` |
 | Claude Code | Symlink each skill to `~/.claude/skills/` |
 | Codex CLI | `~/.codex/skills/pi-skills/` |
 | Amp | `~/.config/amp/tools/pi-skills/` |
