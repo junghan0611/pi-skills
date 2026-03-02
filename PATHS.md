@@ -34,8 +34,7 @@ lifetract read 2023-02-22 --data-dir /data/self-tracking-data
 
 | 방식 | 설명 | 사용 스킬 |
 |------|------|----------|
-| `{baseDir}/CLI` | 스킬 폴더에 번들된 바이너리. pi가 자동 치환 | denotecli, brave-search, browser-tools, youtube-transcript |
-| `~/.local/bin/CLI` | PATH에 설치된 바이너리 | gitcli, lifetract, bibcli |
-| 시스템 패키지 | NixOS/apt로 설치 | gh, gog, curl, node |
+| `{baseDir}/CLI` | 스킬 폴더에 번들된 바이너리 | gogcli, gitcli, lifetract, bibcli, denotecli, brave-search, browser-tools, transcribe |
+| 시스템 패키지 | NixOS/apt로 설치 | gh, summarize, curl, node |
 
-**권장**: `{baseDir}` 방식이 이식성 최고. 바이너리를 스킬 폴더에 복사하면 컨테이너에서도 수정 없이 동작.
+**모든 자체 CLI는 `{baseDir}` 방식으로 통일.** 로컬에서는 PATH에도 있지만, 스킬 문서는 `{baseDir}/CLI`로 안내하여 컨테이너 이식성을 보장한다.

@@ -9,8 +9,6 @@ Query commit history across all local git repositories (~/repos/gh, ~/repos/work
 
 Binary is bundled in the skill directory. Invoke via `{baseDir}/gitcli`.
 
-Also installed at `~/.local/bin/gitcli`.
-
 All output is JSON.
 
 ## When to Use

@@ -7,20 +7,7 @@ description: Search and view 8,000+ BibTeX entries from personal bibliography. U
 
 Search and view bibliographic entries from the user's personal library (8,000+ entries across 8 BibTeX files).
 
-## Prerequisites
-
-Binary must be in PATH. Build from source:
-
-```bash
-# Clone (if not already)
-git clone https://github.com/junghan0611/zotero-config.git
-cd zotero-config
-
-# Build + install to ~/.local/bin
-./run.sh build
-```
-
-Requires Go 1.21+. No external dependencies (stdlib only).
+Binary is bundled in the skill directory. Invoke via `{baseDir}/bibcli`.
 
 Set `BIBCLI_DIR` environment variable or use `--dir` flag.
 

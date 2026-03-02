@@ -8,6 +8,8 @@ description: "Query personal life-tracking data: Samsung Health (sleep, steps, h
 Query and analyze personal health and time-tracking data.
 All records carry Denote IDs (`YYYYMMDDTHHMMSS`) — same axis as denotecli.
 
+Binary is bundled in the skill directory. Invoke via `{baseDir}/lifetract`.
+
 ## Quick Start
 
 ```bash

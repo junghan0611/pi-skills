@@ -7,6 +7,8 @@ description: Google Workspace all-in-one CLI (gog) for Calendar, Gmail, Drive, T
 
 All-in-one Google Workspace CLI. Single binary covering Calendar, Gmail, Drive, Tasks, Chat, Contacts, Sheets, Docs, and more.
 
+Binary is bundled in the skill directory. Invoke via `{baseDir}/gog`.
+
 ## Accounts
 
 - **Personal**: `--account junghanacs@gmail.com` (client: personal, services: all)
