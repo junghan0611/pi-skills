@@ -23,6 +23,27 @@ Bib files location differs by environment. Use `--dir` accordingly:
 
 ## Commands
 
+### Lookup (data4library 서지검색)
+
+```bash
+# ISBN으로 정확 조회 → KDC, 저자, 출판사, 연도, 초록
+bibcli lookup 9791192300283
+
+# 제목 키워드로 검색 (핵심 단어 1개 권장)
+bibcli lookup "슈바이처" --max 5
+bibcli lookup "착각" --max 3
+```
+
+- ISBN (숫자 10~13자리) → data4library 상세 조회 (srchDtlList)
+- 그 외 → data4library 제목 검색 (srchBooks)
+- **주의**: 띄어쓰기 포함 시 검색 안 될 수 있음 → 핵심 키워드 1개로 검색
+- `DATA4LIBRARY_API_KEY` 환경변수 필요
+
+**출력 예시:**
+```json
+[{"isbn13": "9791192300283", "title": "사장은 혼자 울지 않는다", "authors": "김성회 지음", "publisher": "유노콘텐츠그룹", "year": "2022", "kdc": "325.24", "kdc_name": "사회과학 > 경제학 > 경영관리", "description": "...", "image_url": "..."}]
+```
+
 ### Search entries
 
 ```bash
@@ -64,7 +85,14 @@ bibcli stats
 |------|-------------|---------|
 | `--dir DIR` | Bib files directory | `$BIBCLI_DIR` |
 | `--type TYPE` | Filter by type: `Book`, `Online`, `Software`, `Reference`, `Video`, `Article`, `Misc` | all |
-| `--max N` | Max results | search: 20, list: 50 |
+| `--max N` | Max results | search: 20, list: 50, lookup: 5 |
+
+## Environment
+
+| Variable | Command | Description |
+|----------|---------|-------------|
+| `BIBCLI_DIR` | search/show/list/stats | Bib files directory |
+| `DATA4LIBRARY_API_KEY` | lookup | data4library API key |
 
 ## Output
 
