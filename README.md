@@ -1,6 +1,6 @@
 # pi-skills
 
-Personal AI agent skill set for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). 20 skills covering knowledge base, life tracking, git timeline, Google Workspace, Slack, web search, and more.
+Personal AI agent skill set for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). 21 skills covering knowledge base, life tracking, git timeline, Google Workspace, Slack, web search, session analysis, and more.
 
 Forked from [badlogic/pi-skills](https://github.com/badlogic/pi-skills) — upstream skills retained, custom skills added for personal data integration.
 
@@ -42,6 +42,12 @@ Core skills that access personal data accumulated over years.
 | [emacs](emacs/SKILL.md) | Emacs buffer/selection context via emacsclient |
 | [transcribe](transcribe/SKILL.md) | Speech-to-text via Groq Whisper API |
 | [vscode](vscode/SKILL.md) | VS Code diff/compare integration |
+
+### 🔍 Agent Meta (1 skill)
+
+| Skill | Description |
+|-------|-------------|
+| [improve-agent](improve-agent/SKILL.md) | 과거 세션 JSONL 분석 → 반복 실패/패턴 발견 → AGENTS.md/스킬 개선 |
 
 ### 🔔 Peon Ping (4 skills)
 
@@ -149,7 +155,7 @@ jhkim2
 | youtube-transcript | ✓ | ✓ | ✓ |
 
 pi 전용 (봇에 불필요):
-- `browser-tools`, `vscode`, `peon-ping-*`, `bd-to-br-migration`
+- `browser-tools`, `vscode`, `improve-agent`, `peon-ping-*`, `bd-to-br-migration`
 
 ### Slack ↔ 텔레그램 브릿지 (openclaw 봇)
 
