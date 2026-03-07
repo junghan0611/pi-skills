@@ -1,6 +1,6 @@
 # pi-skills
 
-Personal AI agent skill set for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). 21 skills covering knowledge base, life tracking, git timeline, Google Workspace, Slack, web search, session analysis, and more.
+Personal AI agent skill set for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). 22 skills covering knowledge base, life tracking, git timeline, Google Workspace, Slack, web search, session analysis, and more.
 
 Forked from [badlogic/pi-skills](https://github.com/badlogic/pi-skills) — upstream skills retained, custom skills added for personal data integration.
 
@@ -35,11 +35,12 @@ Core skills that access personal data accumulated over years.
 | [medium-extractor](medium-extractor/SKILL.md) | Medium article markdown extraction |
 | [browser-tools](browser-tools/SKILL.md) | Chrome DevTools Protocol automation |
 
-### 🛠️ Editor & Tools (3 skills)
+### 🛠️ Editor & Tools (4 skills)
 
 | Skill | Description |
 |-------|-------------|
 | [emacs](emacs/SKILL.md) | Emacs buffer/selection context via emacsclient |
+| [tmux](tmux/SKILL.md) | 장시간 명령(빌드, 서버, 배포) tmux 실행 + 인터랙티브 동기화 |
 | [transcribe](transcribe/SKILL.md) | Speech-to-text via Groq Whisper API |
 | [vscode](vscode/SKILL.md) | VS Code diff/compare integration |
 
@@ -155,7 +156,7 @@ jhkim2
 | youtube-transcript | ✓ | ✓ | ✓ |
 
 pi 전용 (봇에 불필요):
-- `browser-tools`, `vscode`, `improve-agent`, `peon-ping-*`, `bd-to-br-migration`
+- `browser-tools`, `vscode`, `tmux`, `improve-agent`, `peon-ping-*`, `bd-to-br-migration`
 
 ### Slack ↔ 텔레그램 브릿지 (openclaw 봇)
 
