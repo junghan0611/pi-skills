@@ -1,6 +1,6 @@
 # pi-skills
 
-Personal AI agent skill set for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). 19 skills covering knowledge base, life tracking, git timeline, Google Workspace, web search, and more.
+Personal AI agent skill set for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). 20 skills covering knowledge base, life tracking, git timeline, Google Workspace, Slack, web search, and more.
 
 Forked from [badlogic/pi-skills](https://github.com/badlogic/pi-skills) — upstream skills retained, custom skills added for personal data integration.
 
@@ -19,6 +19,12 @@ Core skills that access personal data accumulated over years.
 | [gogcli](gogcli/SKILL.md) | `gog` | v0.11.0 | Google Calendar, Gmail, Drive, Tasks, Contacts | — |
 | [ghcli](ghcli/SKILL.md) | `gh` | v2.83.2 | GitHub issues, PRs, starred repos | NixOS package |
 | [day-query](day-query/SKILL.md) | — | — | Orchestrates all above by date | — |
+
+### 💬 Communication (1 skill)
+
+| Skill | Description |
+|-------|-------------|
+| [slack-latest](slack-latest/SKILL.md) | Slack 메시지 수집, 쓰레드 읽기, 답장. 브라우저 토큰 인증, DM 필터링 지원 |
 
 ### 🌐 External Information (4 skills)
 
@@ -85,12 +91,17 @@ export BIBCLI_DIR="$HOME/sync/emacs/zotero-config/output"
 export GOG_ACCOUNT="junghanacs@gmail.com"
 ```
 
-### API Keys (in ~/.bashrc.local)
+### API Keys (in ~/.env.local)
 
 ```bash
 export BRAVE_API_KEY="..."       # Brave Search
 export GROQ_API_KEY="..."        # Groq Whisper (transcribe)
 export OPENROUTER_API_KEY="..."  # OpenRouter
+
+# Slack — browser session tokens (expire on logout)
+export SLACK_WORKSPACE_URL="https://WORKSPACE.slack.com"
+export SLACK_TOKEN="xoxc-..."
+export SLACK_COOKIE="xoxd-..."
 ```
 
 ### Author Config (gitcli)
@@ -115,7 +126,7 @@ jhkim2
 
 ### 스킬 동기화 현황
 
-공통 16개 스킬은 세 곳 모두 동일하게 유지:
+공통 17개 스킬은 세 곳 모두 동일하게 유지:
 
 | 스킬 | pi | glg봇 | bbot |
 |------|:--:|:-----:|:----:|
@@ -132,12 +143,25 @@ jhkim2
 | lifetract | ✓ | ✓ | ✓ |
 | medium-extractor | ✓ | ✓ | ✓ |
 | punchout | ✓ | ✓ | ✓ |
+| slack-latest | ✓ | ✓ | ✓ |
 | summarize | ✓ | ✓ | ✓ |
 | transcribe | ✓ | ✓ | ✓ |
 | youtube-transcript | ✓ | ✓ | ✓ |
 
 pi 전용 (봇에 불필요):
 - `browser-tools`, `vscode`, `peon-ping-*`, `bd-to-br-migration`
+
+### Slack ↔ 텔레그램 브릿지 (openclaw 봇)
+
+회사 Slack은 admin 권한이 없어 Slack 앱/봇 설치 불가. 대신 **텔레그램 힣봇이 Slack 인터페이스 역할**을 한다:
+
+```
+텔레그램 → 힣봇(openclaw) → slack-latest 스킬 → 회사 Slack
+```
+
+- 텔레그램에서 "슬랙 오늘 뭐 올라왔어?" → 힣봇이 `slack.py gather --no-dm` 실행 → 결과 텔레그램으로 전달
+- 환경변수(`SLACK_*`)를 Docker에 전달하면 동일하게 동작
+- **DM은 기본 제외** — 에이전트 규칙으로 개인정보 보호
 
 ### 동기화 규칙
 

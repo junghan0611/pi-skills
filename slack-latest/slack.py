@@ -36,10 +36,21 @@ CRED_PATH = _xdg_config_home() / "skills" / "slack-latest" / "credentials.json"
 # ---------------------------------------------------------------------------
 
 def load_credentials() -> tuple[str, str, str]:
-    """Return (workspace_url, xoxc_token, xoxd_cookie)."""
+    """Return (workspace_url, xoxc_token, xoxd_cookie).
+
+    Priority: environment variables > credentials.json file.
+    """
+    env_url = os.environ.get("SLACK_WORKSPACE_URL")
+    env_token = os.environ.get("SLACK_TOKEN")
+    env_cookie = os.environ.get("SLACK_COOKIE")
+    if env_url and env_token and env_cookie:
+        return env_url, env_token, env_cookie
+
     if not CRED_PATH.exists():
-        print(f"No credentials found at {CRED_PATH}", file=sys.stderr)
-        print("Run: python3 slack.py auth", file=sys.stderr)
+        print(f"No credentials found.", file=sys.stderr)
+        print("Set SLACK_WORKSPACE_URL/SLACK_TOKEN/SLACK_COOKIE env vars,",
+              file=sys.stderr)
+        print(f"or run: python3 slack.py auth", file=sys.stderr)
         sys.exit(1)
     creds = json.loads(CRED_PATH.read_text())
     return creds["workspace_url"], creds["token"], creds["cookie"]
@@ -284,6 +295,11 @@ def cmd_gather(args: argparse.Namespace) -> None:
 
     for i, ch in enumerate(conversations):
         ch_id = ch["id"]
+
+        # --no-dm: skip DMs and group DMs
+        if getattr(args, "no_dm", False) and (ch.get("is_im") or ch.get("is_mpim")):
+            continue
+
         ch_name = channel_display_name(ch, user_map)
 
         try:
@@ -448,6 +464,8 @@ def main() -> None:
                           help="Include _uid, _ts, _id fields for API calls")
     p_gather.add_argument("--compact", action="store_true",
                           help="Single-line JSON (default: indented)")
+    p_gather.add_argument("--no-dm", action="store_true",
+                          help="Exclude DMs and group DMs (channels only)")
 
     p_thread = sub.add_parser("thread",
                               help="Read a single thread")
