@@ -147,20 +147,34 @@ cd ~/repos/gh/doomemacs-config && ./run.sh agent start|stop|restart|status
 
 ## org-agenda 통합 뷰 (핵심 기능)
 
-emacsclient로 org-agenda를 직접 호출하면 Human + Agent + Diary가 통합된 타임라인을 한 번에 얻는다.
+전용 API 함수로 Human + Agent + Diary 통합 타임라인을 한 번에 얻는다.
 파일 파싱 불필요. org-agenda가 시간순 병합, 카테고리 분류, 필터링을 모두 처리한다.
 
-### 오늘 일간 뷰
-
+### agent-org-agenda-day
+오늘(또는 특정 날짜) 일간 뷰. clean text 반환.
 ```bash
-ec '(progn
-  (org-agenda-list nil nil 1)
-  (let ((content (buffer-substring-no-properties (point-min) (point-max))))
-    (kill-buffer)
-    content))'
+ec '(agent-org-agenda-day)'           # 오늘
+ec '(agent-org-agenda-day "-1")'      # 어제
+ec '(agent-org-agenda-day "+3")'      # 3일 후
+ec '(agent-org-agenda-day "2026-03-01")'  # 특정 날짜
 ```
 
-반환 예시:
+### agent-org-agenda-week
+주간 뷰 (7일). clean text 반환.
+```bash
+ec '(agent-org-agenda-week)'          # 이번 주
+ec '(agent-org-agenda-week "-7")'     # 지난 주
+```
+
+### agent-org-agenda-tags
+태그 필터링 뷰. org-agenda 태그 매치 문법 사용.
+```bash
+ec '(agent-org-agenda-tags "commit")'         # 커밋만
+ec '(agent-org-agenda-tags "pi|botlog")'      # 에이전트 활동
+ec '(agent-org-agenda-tags "+emacs-draft")'   # emacs 태그 중 draft 제외
+```
+
+### 반환 예시
 ```
 Sunday      1 March 2026
        Agent:       9:20......  botlog: 교육 지도 작성 :botlog:education:
@@ -168,42 +182,6 @@ Sunday      1 March 2026
        Agent:      12:04......  pi-skills 커밋 :pi:commit:
        Human:      13:40......  SKS 허브 작업 시작
        Diary:      16:00-16:40  GTD Focus
-```
-
-### 특정 날짜 뷰
-
-```bash
-# 어제
-ec '(progn
-  (org-agenda-list nil (- (org-today) 1) 1)
-  (let ((content (buffer-substring-no-properties (point-min) (point-max))))
-    (kill-buffer)
-    content))'
-
-# 주간 뷰 (7일)
-ec '(progn
-  (org-agenda-list nil nil 7)
-  (let ((content (buffer-substring-no-properties (point-min) (point-max))))
-    (kill-buffer)
-    content))'
-```
-
-### 태그 필터 뷰
-
-```bash
-# 커밋만
-ec '(progn
-  (org-tags-view nil "commit")
-  (let ((content (buffer-substring-no-properties (point-min) (point-max))))
-    (kill-buffer)
-    content))'
-
-# 에이전트 활동만
-ec '(progn
-  (org-tags-view nil "pi|botlog|glgbot")
-  (let ((content (buffer-substring-no-properties (point-min) (point-max))))
-    (kill-buffer)
-    content))'
 ```
 
 ### 비용과 성능
@@ -215,7 +193,7 @@ ec '(progn
 ### day-query 연동 가이드
 
 day-query에서 "오늘 뭐 했지?" 응답 시:
-1. `ec '(org-agenda-list ...)'` 로 통합 타임라인 가져오기
+1. `ec '(agent-org-agenda-day)'` 로 통합 타임라인 가져오기
 2. gitcli로 커밋 히스토리 보완
 3. lifetract로 건강/시간 데이터 추가
 4. denotecli day로 생성 노트 확인
