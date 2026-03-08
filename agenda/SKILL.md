@@ -124,6 +124,75 @@ grep "^<$(TZ='Asia/Seoul' date '+%Y-%m-%d')" "$AGENDA"
 
 이것만으로 에이전트 스탬프가 org-agenda 일간/주간 뷰에 나타난다.
 
+## 통합 어젠다 뷰 — 대시보드
+
+인간 + 에이전트(복수) + Diary가 하나의 org-agenda 타임라인에 통합된다.
+**어젠다가 공용어** — 별도 프로토콜(jsonl 등) 없이 org-mode가 인터페이스.
+
+### 뷰 조회 (emacsclient)
+
+agent-server에 전용 API가 있다:
+
+```bash
+# emacsclient alias
+ec() { emacsclient -s agent-server --eval "$1"; }
+
+ec '(agent-org-agenda-day)'             # 오늘
+ec '(agent-org-agenda-day "-1")'        # 어제
+ec '(agent-org-agenda-week)'            # 주간
+ec '(agent-org-agenda-tags "commit")'   # 태그 필터
+```
+
+### org-agenda-files 구성 (자동)
+
+`workflow-shared.el`이 Doom과 agent-server 양쪽에서 동일하게 구성:
+
+| 소스 | 내용 |
+|------|------|
+| `_aprj` 태그 파일 | active project (공지사항 등) |
+| `botlog/agenda/` | 에이전트 스탬프 (디바이스별 파일) |
+| 현재 주 journal | 인간 타임스탬프 엔트리 |
+
+## 어젠다 프로토콜 규약
+
+### 태그 규칙 (필수!)
+
+org-mode 태그는 `[a-zA-Z0-9_@]` 만 허용. **하이픈(-) 넣으면 무시됨!**
+
+```
+:good_tag:    ← OK
+:bad-tag:     ← 무시됨! agenda에서 안 보임
+```
+
+### 스탬프 네이밍
+
+| 요소 | 규칙 | 예시 |
+|------|------|------|
+| 타이틀 접두사 | 리포 작업: `리포명:` / 봇 활동: `봇이름:` | `doomemacs-config: fix ...` / `glg-claude: 검색 결과` |
+| 카테고리 | 건드리지 않음. 파일 `#+CATEGORY:`에 관리자가 설정 | `Agent`, `Human`, `Diary` |
+| 태그 | 액션 중심. 이름/머신을 태그에 넣지 말 것 | `:commit:search:botlog:` |
+| TODO 키워드 | 상태 표현 | `TODO` `NEXT` `DONE` `DONT` |
+
+### 에이전트 간 요청
+
+`TODO` 키워드로 요청을 남기면 다른 에이전트가 사이클에서 확인:
+
+```org
+**** TODO 웹검색: "org-element cache" 결과 필요 :search:
+<2026-03-08 Sun 14:00>
+요청자: glg-claude (도구 없음)
+```
+
+도구가 있는 에이전트가 보고 `DONE` 처리 + 결과 첨부.
+
+### agent-server 기술 정책
+
+| 항목 | 값 | 이유 |
+|------|-----|------|
+| org-element 캐시 | OFF | 멀티 프로세스 stale 방지 |
+| Doom init | 우회 (`--init-directory`) | GUI 서버 충돌 방지 |
+| backup/lockfile | OFF | Syncthing 오염 방지 |
+
 ## 주의사항
 
 - agenda 파일은 **에이전트만 쓴다** — 인간은 org-agenda로 읽기만
