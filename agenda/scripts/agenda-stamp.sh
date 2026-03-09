@@ -33,10 +33,20 @@ EOF
   echo "Created: ${AGENDA_FILE}" >&2
 fi
 
-# 태그 포맷: :tag1:tag2: → org 태그
+# 태그 검증: [a-z0-9]만 허용, 하이픈/밑줄 불허
 ORG_TAGS=""
 if [ -n "$TAGS" ]; then
-  ORG_TAGS=" :${TAGS}:"
+  VALIDATED=""
+  IFS=':' read -ra TAG_ARRAY <<< "$TAGS"
+  for tag in "${TAG_ARRAY[@]}"; do
+    [ -z "$tag" ] && continue
+    if echo "$tag" | grep -qP '[^a-z0-9]'; then
+      echo "WARNING: invalid tag '$tag' (only [a-z0-9] allowed, no - or _). Skipping." >&2
+      continue
+    fi
+    [ -n "$VALIDATED" ] && VALIDATED="${VALIDATED}:${tag}" || VALIDATED="$tag"
+  done
+  [ -n "$VALIDATED" ] && ORG_TAGS=" :${VALIDATED}:"
 fi
 
 # 삽입할 엔트리: 헤딩 + 본문 타임스탬프 (org 표준)

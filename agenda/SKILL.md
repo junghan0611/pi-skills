@@ -95,7 +95,7 @@ reverse datetree이므로 파일 앞부분 = 최신 활동.
    → agenda-stamp.sh "세션 시작" "pi"
 
 2. 의미 있는 작업 완료마다
-   → agenda-stamp.sh "무엇을 했다" "pi:project-tag"
+   → agenda-stamp.sh "무엇을 했다" "pi:commit:projectname"
 
 3. 세션 종료 / punchout
    → agenda-stamp.sh "세션 종료" "pi"
@@ -171,11 +171,15 @@ ec '(agent-org-agenda-tags "commit")'   # 태그 필터
 
 ### 태그 규칙 (필수!)
 
-org-mode 태그는 `[a-zA-Z0-9_@]` 만 허용. **하이픈(-) 넣으면 무시됨!**
+org-mode 태그는 `[a-z0-9]` 소문자 영숫자만. **하이픈(-), 밑줄(_) 모두 불허!**
+Denote filetags와 동일한 규칙. 복합어는 붙여 쓴다.
 
 ```
-:good_tag:    ← OK
-:bad-tag:     ← 무시됨! agenda에서 안 보임
+:commit:       ← OK
+:doomemacs:    ← OK (붙여쓰기)
+:doom:emacs:   ← OK (분리도 가능)
+:bad-tag:      ← ❌ 하이픈 → org가 무시
+:bad_tag:      ← ❌ 밑줄 → org-tag-re에서 제거됨
 ```
 
 ### 스탬프 네이밍
