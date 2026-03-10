@@ -10,6 +10,25 @@ All records carry Denote IDs (`YYYYMMDDTHHMMSS`) — same axis as denotecli.
 
 Binary is bundled in the skill directory. Invoke via `{baseDir}/lifetract`.
 
+All output is JSON.
+
+## Why This Exists (not sqlite3/pandas)
+
+Do NOT open lifetract.db or CSV files directly with Python/sqlite3/pandas.
+
+1. **Denote ID mapping** — Raw CSVs use Samsung's epoch timestamps. The CLI converts them to `YYYYMMDDTHHMMSS` Denote IDs for cross-referencing with denotecli/gitcli.
+2. **Multi-source join** — Sleep, heart rate, steps, stress, exercise, time tracking from different tables/sources, unified per-day. Manual SQL gets this wrong.
+3. **JSON for agents** — Structured output ready for reasoning. No parsing needed.
+
+## When to Use
+
+- "오늘 몸 상태" → `lifetract today`
+- "어제 뭐 했지?" → `lifetract read 2026-03-09`
+- "최근 수면 패턴" → `lifetract sleep --days 30 --summary`
+- "이번 주 시간 사용" → `lifetract time --days 7`
+- "운동 기록" → `lifetract exercise --days 30`
+- "30일 추이" → `lifetract timeline --days 30`
+
 ## Quick Start
 
 ```bash
@@ -53,7 +72,7 @@ lifetract import                    # dry-run: 매니페스트 확인
 lifetract import --exec             # 실행: CSV+aTimeLogger → lifetract.db
 ```
 
-183,635 rows, 33MB, ~1.5초. 테이블: sleep, sleep_stage, heart_rate, steps_daily, stress, exercise, weight, hrv, atl_category, atl_interval.
+198,030 rows, 36MB, ~3s. Tables: sleep, sleep_stage, heart_rate, steps_daily, stress, exercise, weight, hrv, atl_category, atl_interval.
 
 ### read — Denote ID로 조회
 
@@ -139,18 +158,18 @@ denotecli search "20251004"
 
 같은 Denote ID 축 → 두 CLI의 결과를 날짜로 조인 가능.
 
-## 데이터 범위
+## Data Coverage (updated 2026-03-10)
 
-| 소스 | 기간 | 레코드 |
-|------|------|--------|
-| Samsung Health 수면 | 2017-03 ~ 2025-10 | 4,212 |
-| Samsung Health 심박 | 2017-03 ~ 2025-10 | 58,701 |
-| Samsung Health 걸음 | 2017 ~ 2025-10 | 9,227 |
-| Samsung Health 스트레스 | 2017-03 ~ 2025-10 | 23,627 |
-| Samsung Health 운동 | 2017-03 ~ 2025-10 | 2,180 |
-| Samsung Health 체중 | — | 283 |
+| Source | Period | Rows |
+|--------|--------|------|
+| Samsung Health sleep | 2017-03 ~ 2026-03 | 4,489 |
+| Samsung Health heart rate | 2017-03 ~ 2026-03 | 62,036 |
+| Samsung Health steps | 2017 ~ 2026-03 | 9,692 |
+| Samsung Health stress | 2017-03 ~ 2026-03 | 25,768 |
+| Samsung Health exercise | 2017-03 ~ 2026-03 | 2,195 |
+| Samsung Health weight | — | 283 |
 | Samsung Health HRV | — | 1,058 |
-| aTimeLogger | 2021-10 ~ 2025-10 | 13,102 intervals |
+| aTimeLogger | 2021-10 ~ 2026-03 | 13,918 intervals |
 
 ## Related Skills
 
