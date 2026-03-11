@@ -76,6 +76,7 @@ Denote 파일명 규칙:
 #+filetags:   :<tag1>:<tag2>:<botlog>:<tag3>:
 #+identifier: <IDENTIFIER>
 #+export_file_name: <IDENTIFIER>.md
+#+OPTIONS: toc:1
 ```
 
 **선택 헤더:**
@@ -187,6 +188,7 @@ ls ~/org/botlog/ | grep -i "<키워드>"
 #+filetags:   :ai:anthropic:botlog:guru:safety:society:
 #+identifier: 20260227T031800
 #+export_file_name: 20260227T031800.md
+#+OPTIONS: toc:1
 
 * 히스토리
 - [2026-02-27 Fri 03:18] 생성 — Amodei x Kamath 유튜브 대담 요약
