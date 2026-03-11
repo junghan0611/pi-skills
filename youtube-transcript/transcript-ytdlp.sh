@@ -50,6 +50,8 @@ find_cookies() {
     echo "$COOKIES"
   elif [[ -f "$HOME/cookies.txt" ]]; then
     echo "$HOME/cookies.txt"
+  elif [[ -f "$HOME/cookies.txt.bak" ]]; then
+    echo "$HOME/cookies.txt.bak"
   elif [[ -f "$HOME/Downloads/www.youtube.com_cookies.txt" ]]; then
     echo "$HOME/Downloads/www.youtube.com_cookies.txt"
   fi
@@ -57,8 +59,16 @@ find_cookies() {
 
 # List subtitles
 if $LIST_ONLY; then
-  yt-dlp --list-subs --skip-download "$VIDEO" 2>/dev/null \
+  COOKIE_FILE=$(find_cookies)
+  COOKIE_ARGS=()
+  if [[ -n "$COOKIE_FILE" ]]; then
+    COOKIE_TMP=$(mktemp)
+    cp "$COOKIE_FILE" "$COOKIE_TMP"
+    COOKIE_ARGS=(--cookies "$COOKIE_TMP")
+  fi
+  yt-dlp "${COOKIE_ARGS[@]}" --list-subs --skip-download "$VIDEO" 2>/dev/null \
     | grep -E "^(Language|[a-z]{2})" || true
+  [[ -n "${COOKIE_TMP:-}" ]] && rm -f "$COOKIE_TMP"
   exit 0
 fi
 
@@ -80,7 +90,10 @@ SUB_FILE=$(find "$TMPDIR" -name "*.vtt" | head -1)
 if [[ -z "$SUB_FILE" ]]; then
   COOKIE_FILE=$(find_cookies)
   if [[ -n "$COOKIE_FILE" ]]; then
-    yt-dlp --cookies "$COOKIE_FILE" \
+    # Use read-only copy to prevent yt-dlp from overwriting original cookies
+    COOKIE_COPY="$TMPDIR/cookies.txt"
+    cp "$COOKIE_FILE" "$COOKIE_COPY"
+    yt-dlp --cookies "$COOKIE_COPY" \
       --write-auto-subs --write-subs \
       --sub-langs "$LANG_CODE" \
       --sub-format vtt \
