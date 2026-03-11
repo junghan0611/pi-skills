@@ -78,6 +78,7 @@ trap 'rm -rf "$TMPDIR"' EXIT
 
 # Try without cookies first (avoids "format not available" error from cookie auth)
 yt-dlp \
+  --js-runtimes node \
   --write-auto-subs --write-subs \
   --sub-langs "$LANG_CODE" \
   --sub-format vtt \
@@ -94,6 +95,7 @@ if [[ -z "$SUB_FILE" ]]; then
     COOKIE_COPY="$TMPDIR/cookies.txt"
     cp "$COOKIE_FILE" "$COOKIE_COPY"
     yt-dlp --cookies "$COOKIE_COPY" \
+      --js-runtimes node \
       --write-auto-subs --write-subs \
       --sub-langs "$LANG_CODE" \
       --sub-format vtt \
