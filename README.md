@@ -1,6 +1,19 @@
 # pi-skills
 
-Personal AI agent skill set for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). 22 skills covering knowledge base, life tracking, git timeline, Google Workspace, Slack, web search, session analysis, and more.
+> **⚠️ Migrated to [agent-config](https://github.com/junghan0611/agent-config)**
+>
+> All 23 skills have been moved to `agent-config/skills/`. This repo is kept as archive.
+> New development happens at [junghan0611/agent-config](https://github.com/junghan0611/agent-config).
+>
+> ```bash
+> # New setup
+> git clone https://github.com/junghan0611/agent-config.git
+> cd agent-config && ./run.sh setup
+> ```
+
+---
+
+Personal AI agent skill set for [pi-coding-agent](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). 23 skills covering knowledge base, life tracking, git timeline, Google Workspace, Slack, web search, session analysis, and more.
 
 Forked from [badlogic/pi-skills](https://github.com/badlogic/pi-skills) — upstream skills retained, custom skills added for personal data integration.
 
@@ -42,7 +55,6 @@ Core skills that access personal data accumulated over years.
 | [emacs](emacs/SKILL.md) | Emacs buffer/selection context via emacsclient |
 | [tmux](tmux/SKILL.md) | 장시간 명령(빌드, 서버, 배포) tmux 실행 + 인터랙티브 동기화 |
 | [transcribe](transcribe/SKILL.md) | Speech-to-text via Groq Whisper API |
-| [vscode](vscode/SKILL.md) | VS Code diff/compare integration |
 
 ### 🔍 Agent Meta (1 skill)
 
@@ -50,143 +62,15 @@ Core skills that access personal data accumulated over years.
 |-------|-------------|
 | [improve-agent](improve-agent/SKILL.md) | 과거 세션 JSONL 분석 → 반복 실패/패턴 발견 → AGENTS.md/스킬 개선 |
 
-### 🔔 Peon Ping (4 skills)
-
-| Skill | Description |
-|-------|-------------|
-| [peon-ping-toggle](peon-ping-toggle/SKILL.md) | Sound notifications on/off |
-| [peon-ping-config](peon-ping-config/SKILL.md) | Volume, pack rotation, categories |
-| [peon-ping-use](peon-ping-use/SKILL.md) | Voice pack selection per session |
-| [peon-ping-log](peon-ping-log/SKILL.md) | Exercise rep logging |
-
 ### 📦 Utility (1 skill)
 
 | Skill | Description |
 |-------|-------------|
 | [bd-to-br-migration](bd-to-br-migration/SKILL.md) | Beads tracker migration guide |
 
-## Custom CLIs (Go, zero dependencies)
-
-All custom CLIs are written in Go with no external dependencies. Static binaries, CGO_ENABLED=0.
-
-| CLI | Description | Tests | Coverage |
-|-----|-------------|-------|----------|
-| **denotecli** | Denote knowledge base search, read, day timeline, tag management | 30+ | 70.8% |
-| **gitcli** | Local git commit timeline across 58 repos | 21 | 70.3% |
-| **lifetract** | Samsung Health + aTimeLogger unified query | — | — |
-| **bibcli** | BibTeX search/show across 8 bib files | — | — |
-
-### Build & Install
-
-```bash
-# Each CLI: cd into repo, build, copy to ~/.local/bin
-cd ~/repos/gh/denotecli/denotecli && CGO_ENABLED=0 go build -o denotecli . && cp denotecli ~/.local/bin/
-cd ~/repos/gh/gitcli/gitcli && CGO_ENABLED=0 go build -o gitcli . && cp gitcli ~/.local/bin/
-cd ~/repos/gh/lifetract/lifetract && CGO_ENABLED=0 go build -o lifetract . && cp lifetract ~/.local/bin/
-cd ~/repos/gh/zotero-config/bibcli && CGO_ENABLED=0 go build -o bibcli . && cp bibcli ~/.local/bin/
-```
-
 ## Environment Setup
 
 See [ENV-SETUP.md](ENV-SETUP.md) for full details.
-
-### Required
-
-```bash
-# ~/.env.local or home.sessionVariables in NixOS
-export BIBCLI_DIR="$HOME/sync/emacs/zotero-config/output"
-export GOG_ACCOUNT="junghanacs@gmail.com"
-```
-
-### API Keys (in ~/.env.local)
-
-```bash
-export BRAVE_API_KEY="..."       # Brave Search
-export GROQ_API_KEY="..."        # Groq Whisper (transcribe)
-export OPENROUTER_API_KEY="..."  # OpenRouter
-
-# Slack — browser session tokens (expire on logout)
-export SLACK_WORKSPACE_URL="https://WORKSPACE.slack.com"
-export SLACK_TOKEN="xoxc-..."
-export SLACK_COOKIE="xoxd-..."
-```
-
-### Author Config (gitcli)
-
-```
-# ~/.config/gitcli/authors
-junghan
-jhkim2
-```
-
-## Agent Compatibility
-
-이 스킬셋은 로컬 에이전트와 OpenClaw 봇들이 공유한다. **공통 스킬은 동일한 SKILL.md를 유지해야 한다.**
-
-### 배포 위치
-
-| 에이전트 | 위치 | 설명 |
-|----------|------|------|
-| **pi** (로컬) | `~/.pi/agent/skills/pi-skills/` | 이 리포의 원본. 노트북/NUC에서 직접 사용 |
-| **glg봇** | `~/openclaw/config/workspace-glg/skills/` | OpenClaw Docker — glg 워크스페이스 |
-| **bbot** | `~/openclaw/config/workspace/skills/` | OpenClaw Docker — b 워크스페이스 |
-
-### 스킬 동기화 현황
-
-공통 17개 스킬은 세 곳 모두 동일하게 유지:
-
-| 스킬 | pi | glg봇 | bbot |
-|------|:--:|:-----:|:----:|
-| agenda | ✓ | ✓ | ✓ |
-| bibcli | ✓ | ✓ | ✓ |
-| botlog | ✓ | ✓ | ✓ |
-| brave-search | ✓ | ✓ | ✓ |
-| day-query | ✓ | ✓ | ✓ |
-| denotecli | ✓ | ✓ | ✓ |
-| emacs | ✓ | ✓ | ✓ |
-| ghcli | ✓ | ✓ | ✓ |
-| gitcli | ✓ | ✓ | ✓ |
-| gogcli | ✓ | ✓ | ✓ |
-| lifetract | ✓ | ✓ | ✓ |
-| medium-extractor | ✓ | ✓ | ✓ |
-| punchout | ✓ | ✓ | ✓ |
-| slack-latest | ✓ | ✓ | ✓ |
-| summarize | ✓ | ✓ | ✓ |
-| transcribe | ✓ | ✓ | ✓ |
-| youtube-transcript | ✓ | ✓ | ✓ |
-
-pi 전용 (봇에 불필요):
-- `browser-tools`, `vscode`, `tmux`, `improve-agent`, `peon-ping-*`, `bd-to-br-migration`
-
-### Slack ↔ 텔레그램 브릿지 (openclaw 봇)
-
-회사 Slack은 admin 권한이 없어 Slack 앱/봇 설치 불가. 대신 **텔레그램 힣봇이 Slack 인터페이스 역할**을 한다:
-
-```
-텔레그램 → 힣봇(openclaw) → slack-latest 스킬 → 회사 Slack
-```
-
-- 텔레그램에서 "슬랙 오늘 뭐 올라왔어?" → 힣봇이 `slack.py gather --no-dm` 실행 → 결과 텔레그램으로 전달
-- 환경변수(`SLACK_*`)를 Docker에 전달하면 동일하게 동작
-- **DM은 기본 제외** — 에이전트 규칙으로 개인정보 보호
-
-### 동기화 규칙
-
-1. **pi-skills 리포가 원본** — 여기서 수정 후 봇에 복사
-2. **봇에서 먼저 수정한 경우** — pi-skills에도 반영 (glg봇 emacs SKILL.md 사례)
-3. **공통 스킬 수정 시** 세 곳 모두 동일한지 확인:
-   ```bash
-   diff ~/.pi/agent/skills/pi-skills/<skill>/SKILL.md ~/openclaw/config/workspace-glg/skills/<skill>/SKILL.md
-   diff ~/openclaw/config/workspace-glg/skills/<skill>/SKILL.md ~/openclaw/config/workspace/skills/<skill>/SKILL.md
-   ```
-
-### 기타 에이전트
-
-| Agent | Method |
-|-------|--------|
-| Claude Code | Symlink each skill to `~/.claude/skills/` |
-| Codex CLI | `~/.codex/skills/pi-skills/` |
-| Amp | `~/.config/amp/tools/pi-skills/` |
 
 ## License
 
